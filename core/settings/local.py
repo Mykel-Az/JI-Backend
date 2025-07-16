@@ -10,3 +10,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Enable or disable geocoding (used in Location.save) dunring tests or migrations
+ENABLE_GEOLOCATION = True
