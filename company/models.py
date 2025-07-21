@@ -103,6 +103,7 @@ class CompanyProfile(TimeModel):
     def total_jobs_posted(self):
         return self.jobs.count()  # related_name from Job model
     
+    @property    
     def total_jobs_open(self):
         return self.jobs.filter(job_status='open').count()
 

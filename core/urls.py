@@ -27,7 +27,7 @@ urlpatterns = [
     # path('api/v1/trades/', include('trades_services.urls')),
     # path('api/v1/jobs/', include('Jobs.urls')),
     # path('api/v1/professionals/', include('professionals.urls')),
-    # path('api/v1/companies/', include('company.urls')),
+    path('api/v1/companies/', include('company.urls')),
 
     # Swagger and schema
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from core.common.models import Location, Review
 from .models import *
 from accounts.serializers import MinimalUserSerializer
@@ -13,17 +14,14 @@ class CompanyLocationSerializer(serializers.ModelSerializer):
 
 class MinimialCompanySerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
-    avaliable_jobs = serializers.SerializerMethodField(read_only=True)
+    # avaliable_jobs = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = CompanyProfile
         fields = ['id', 'company_name', 'location', 'logo', 'average_rating', 
-                  'avaliable_jobs', 'is_remote_friendly', 'is_verified', 'is_active']
+                  'total_jobs_open', 'is_remote_friendly', 'is_verified', 'is_active']
         
-    def get_avaliable_jobs(self, obj):
-        return obj.jobs.filter(job_status='open').count()
-
-
+    
 
 class CompanyReviewSerializer(serializers.ModelSerializer):
     reviewer = MinimalUserSerializer(read_only=True)
@@ -70,8 +68,9 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
         fields = '__all__'
-        read_only_fields = ['is_verified', 'is_active', 'total_jobs_posted', 'total_followers', 'average_rating']
+        read_only_fields = ['is_verified', 'is_active', 'total_jobs_posted', 'total_jobs_open', 'total_followers', 'average_rating']
 
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_reviews(self, obj):
         return CompanyReviewSerializer(Review.objects.filter(reviewed_user=obj.user), many=True).data
 
@@ -97,7 +96,7 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
 class CompanyUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
-        fields = ['category', 'company_size', 'location', 'is_remote_friendly'  
+        fields = ['category', 'company_size', 'location', 'is_remote_friendly',
                   'tagline', 'description', 'mission_statement',
                   'logo', 'cover_image', 'website', 'linkedin_url', 'twitter_url',
                   'Alumini', 'faqs',
